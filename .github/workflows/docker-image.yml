@@ -2,49 +2,36 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    
-    - name: Docker login
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Building Docker Image
-      run: |
-        docker build -t luisrmunoz/docker-graphql:0.0.2 .
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-    - name: Pushing Docker Image
-      run : |
-        docker push luisrmunoz/docker-graphql:0.0.2
+      - name: Building Docker Image
+        run: |
+          docker build -t luisrmunoz/docker-graphql:0.0.2 .
+          docker build -t luisrmunoz/docker-graphql:latest .
 
+      - name: Pushing Docker Image
+        run: |
+          docker push luisrmunoz/docker-graphql:0.0.2
+          docker push luisrmunoz/docker-graphql:latest
 
-
-
-
-
-
-
-
-
-
-    
-    
-        
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s
