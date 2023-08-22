@@ -33,15 +33,19 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
           echo "New version: $NEW_VERSION !!!! major"
 
-      # - name: Building Docker Image
-      #   run: |
-      #     docker build -t luisrmunoz/docker-graphql:0.0.2 .
-      #     docker build -t luisrmunoz/docker-graphql:latest .
+      - name: Building Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t luisrmunoz/docker-graphql:$NEW_VERSION .
+          docker build -t luisrmunoz/docker-graphql:latest .
 
-      # - name: Pushing Docker Image
-      #   run: |
-      #     docker push luisrmunoz/docker-graphql:0.0.2
-      #     docker push luisrmunoz/docker-graphql:latest
+      - name: Pushing Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push luisrmunoz/docker-graphql:$NEW_VERSION
+          docker push luisrmunoz/docker-graphql:latest
 
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s
